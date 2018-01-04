@@ -6,11 +6,19 @@
     android:layout_height="match_parent"
     tools:context="com.banter.banter.SignUpActivity">
 
-    <TextView
-        android:id="@+id/textView2"
+    <Button
+        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sing Up View"
-        tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="222dp" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:onClick="SignUpButtonPressed"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/button_sign_up" />
 </android.support.constraint.ConstraintLayout>
