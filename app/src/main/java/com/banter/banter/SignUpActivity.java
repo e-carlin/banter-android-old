@@ -1,9 +1,9 @@
 package com.banter.banter;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
@@ -18,25 +18,43 @@ public class SignUpActivity extends AppCompatActivity {
     private final String userPoolId = "us-east-1_VU4GdCuOZ";
     private final String clientId = "b51em6hvi9kldqslihjlv650l";
     private final String clientSecret = "1kuh2j8lhfedi6q9cft73gq2rgmn07ujed1gqpdhl0t8r2gau29g";
-    private static final Regions cognitoRegion = Regions.US_EAST_1;
+    private final Regions cognitoRegion = Regions.US_EAST_1;
 
+    private EditText email;
+    private EditText password;
+    private Button signUp;
+
+    private String userEmail;
+    private String userPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+
+        init();
     }
 
-    public void SignUpButtonPressed(View view) {
-        System.out.println("***** Sign up button pressed in sign up activity *****");
+    private void init() {
+        email = (EditText) findViewById(R.id.editTextEmail);
+        password= (EditText) findViewById(R.id.editTextPassword);
 
-        ClientConfiguration clientConfiguration = new ClientConfiguration();
-        CognitoUserPool userPool = new CognitoUserPool(view.getContext(), userPoolId, clientId, clientSecret, cognitoRegion);
-        System.out.println("***** Pool is "+userPool+" *****");
+        signUp = (Button) findViewById(R.id.buttonSignUp);
+        signUp.setOnClickListener((v) -> {
+            userEmail = email.getText().toString();
+            userPassword = password.getText().toString();
 
-        CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-        userAttributes.addAttribute("email", "evforward123@gmail.com");
+            System.out.println("*********************************");
+            System.out.println("Signing up email: "+email+" password: "+password);
+            System.out.println("*********************************");
 
-        userPool.signUpInBackground("evforward123@gmail.com", "12345678", userAttributes, null, signupCallback);
+            ClientConfiguration clientConfiguration = new ClientConfiguration();
+            CognitoUserPool userPool = new CognitoUserPool(v.getContext(), userPoolId, clientId, clientSecret, cognitoRegion);
+
+            CognitoUserAttributes userAttributes = new CognitoUserAttributes();
+            userAttributes.addAttribute("email", userEmail);
+
+            userPool.signUpInBackground(userEmail, userPassword, userAttributes, null, signupCallback);
+        });
     }
 
     SignUpHandler signupCallback = new SignUpHandler() {
