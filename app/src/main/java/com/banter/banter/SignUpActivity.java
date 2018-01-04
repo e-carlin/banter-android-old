@@ -34,7 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
         System.out.println("***** Pool is "+userPool+" *****");
 
         CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-        userAttributes.addAttribute("email", "test@carlin.com");
+        userAttributes.addAttribute("email", "evforward123@gmail.com");
 
         SignUpHandler signupCallback = new SignUpHandler() {
 
@@ -63,7 +63,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         };
 
-        userPool.signUpInBackground("test@carlin.com", "12345678", userAttributes, null, signupCallback);
+        userPool.signUpInBackground("evforward123@gmail.com", "12345678", userAttributes, null, signupCallback);
     }
 
 }
