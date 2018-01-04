@@ -31,7 +31,7 @@ public class SignUpActivity extends AppCompatActivity {
         emailField = (EditText) findViewById(R.id.text_email);
         passwordField = (EditText) findViewById(R.id.text_password);
 
-        signUpButton = (Button) findViewById(R.id.buttonSignUp);
+        signUpButton = (Button) findViewById(R.id.button_sign_up);
         signUpButton.setOnClickListener((v) -> {
             userEmail = emailField.getText().toString();
             userPassword = passwordField.getText().toString();

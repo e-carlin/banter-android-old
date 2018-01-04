@@ -19,10 +19,23 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-//        init();
+        init();
     }
 
-//    private void init() {
-//        emailField  = (EditText) findViewById(R.id.)
-//    }
+    private void init() {
+        emailField  = (EditText) findViewById(R.id.text_email);
+        passwordField = (EditText) findViewById(R.id.text_password);
+
+        signInButton = (Button) findViewById(R.id.button_sign_in);
+        signInButton.setOnClickListener((v) -> {
+            userEmail = emailField.getText().toString();
+            userPassword = passwordField.getText().toString();
+
+            //TODO: Sign in the user
+        });
+
+        //Sign in handler
+
+
+    }
 }
