@@ -4,32 +4,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.banter.banter.MainActivity">
+    tools:context="com.banter.banter.SignUpConfirmActivity">
 
     <Button
-        android:id="@+id/signIn"
+        android:id="@+id/buttonConfirmCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="180dp"
-        android:text="@string/button_main_go_to_sign_in"
+        android:text="@string/button_sign_up_confirm_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="195dp" />
+
+    <EditText
+        android:id="@+id/editTextConfCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="120dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="@string/text_view_sign_up_confirm_conf_code"
+        app:layout_constraintBottom_toTopOf="@+id/buttonConfirmCode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/signUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="180dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:onClick="SignUpButtonPressed"
-        android:text="@string/button_main_go_to_sign_up"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signIn" />
 </android.support.constraint.ConstraintLayout>

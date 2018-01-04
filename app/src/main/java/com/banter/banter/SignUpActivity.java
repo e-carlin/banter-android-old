@@ -1,5 +1,6 @@
 package com.banter.banter;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -14,11 +15,6 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHan
 import com.amazonaws.regions.Regions;
 
 public class SignUpActivity extends AppCompatActivity {
-
-    private final String userPoolId = "us-east-1_VU4GdCuOZ";
-    private final String clientId = "b51em6hvi9kldqslihjlv650l";
-    private final String clientSecret = "1kuh2j8lhfedi6q9cft73gq2rgmn07ujed1gqpdhl0t8r2gau29g";
-    private final Regions cognitoRegion = Regions.US_EAST_1;
 
     private EditText email;
     private EditText password;
@@ -47,13 +43,11 @@ public class SignUpActivity extends AppCompatActivity {
             System.out.println("Signing up email: "+email+" password: "+password);
             System.out.println("*********************************");
 
-            ClientConfiguration clientConfiguration = new ClientConfiguration();
-            CognitoUserPool userPool = new CognitoUserPool(v.getContext(), userPoolId, clientId, clientSecret, cognitoRegion);
 
             CognitoUserAttributes userAttributes = new CognitoUserAttributes();
             userAttributes.addAttribute("email", userEmail);
 
-            userPool.signUpInBackground(userEmail, userPassword, userAttributes, null, signupCallback);
+            AWSCognitoHelper.getCognitoUserPool().signUpInBackground(userEmail, userPassword, userAttributes, null, signupCallback);
         });
     }
 
@@ -70,6 +64,7 @@ public class SignUpActivity extends AppCompatActivity {
                 // cognitoUserCodeDeliveryDetails will indicate where the confirmation code was sent
                 // Get the confirmation code from user
                 System.out.println("******** USER MUST BE CONFIRMED *******");
+                confirmSignUp(cognitoUserCodeDeliveryDetails);
             }
             else {
                 // The user has already been confirmed
@@ -83,6 +78,16 @@ public class SignUpActivity extends AppCompatActivity {
             System.out.println("**** SING UP FAILED: "+exception);
         }
     };
+
+    private void confirmSignUp(CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
+        Intent intent = new Intent(this, SignUpConfirmActivity.class);
+        intent.putExtra("email", userEmail);
+        intent.putExtra("source","signup");
+        intent.putExtra("destination", cognitoUserCodeDeliveryDetails.getDestination());
+        intent.putExtra("deliveryMed", cognitoUserCodeDeliveryDetails.getDeliveryMedium());
+        intent.putExtra("attribute", cognitoUserCodeDeliveryDetails.getAttributeName());
+        startActivityForResult(intent, 10);
+    }
 
 }
 
