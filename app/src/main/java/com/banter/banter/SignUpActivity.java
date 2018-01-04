@@ -6,7 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.amazonaws.ClientConfiguration;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
 import com.amazonaws.regions.Regions;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -28,6 +32,39 @@ public class SignUpActivity extends AppCompatActivity {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         CognitoUserPool userPool = new CognitoUserPool(view.getContext(), userPoolId, clientId, clientSecret, cognitoRegion);
         System.out.println("***** Pool is "+userPool+" *****");
+
+        CognitoUserAttributes userAttributes = new CognitoUserAttributes();
+        userAttributes.addAttribute("email", "test@carlin.com");
+
+        SignUpHandler signupCallback = new SignUpHandler() {
+
+            @Override
+            public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
+                // Sign-up was successful
+                System.out.println("****** SIGN UP SUCCESSFUL ******");
+
+                // Check if this user (cognitoUser) has to be confirmed
+                if(!userConfirmed) {
+                    // This user has to be confirmed and a confirmation code was sent to the user
+                    // cognitoUserCodeDeliveryDetails will indicate where the confirmation code was sent
+                    // Get the confirmation code from user
+                    System.out.println("******** USER MUST BE CONFIRMED *******");
+                }
+                else {
+                    // The user has already been confirmed
+                    System.out.println("****** USER DOESN\'t NEED TO BE CONFIRMED *****");
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                // Sign-up failed, check exception for the cause
+                System.out.println("**** SING UP FAILED: "+exception);
+            }
+        };
+
+        userPool.signUpInBackground("test@carlin.com", "12345678", userAttributes, null, signupCallback);
     }
 
 }
+
