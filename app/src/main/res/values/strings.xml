@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Banter</string>
+    <string name="button_sign_in">Sign In</string>
+    <string name="button_sign_up">Sign Up</string>
 </resources>
