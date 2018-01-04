@@ -6,13 +6,10 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.amazonaws.ClientConfiguration;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
-import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserPool;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
-import com.amazonaws.regions.Regions;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -38,11 +35,6 @@ public class SignUpActivity extends AppCompatActivity {
         signUp.setOnClickListener((v) -> {
             userEmail = email.getText().toString();
             userPassword = password.getText().toString();
-
-            System.out.println("*********************************");
-            System.out.println("Signing up email: "+email+" password: "+password);
-            System.out.println("*********************************");
-
 
             CognitoUserAttributes userAttributes = new CognitoUserAttributes();
             userAttributes.addAttribute("email", userEmail);
