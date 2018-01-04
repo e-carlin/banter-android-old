@@ -36,35 +36,35 @@ public class SignUpActivity extends AppCompatActivity {
         CognitoUserAttributes userAttributes = new CognitoUserAttributes();
         userAttributes.addAttribute("email", "evforward123@gmail.com");
 
-        SignUpHandler signupCallback = new SignUpHandler() {
-
-            @Override
-            public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
-                // Sign-up was successful
-                System.out.println("****** SIGN UP SUCCESSFUL ******");
-
-                // Check if this user (cognitoUser) has to be confirmed
-                if(!userConfirmed) {
-                    // This user has to be confirmed and a confirmation code was sent to the user
-                    // cognitoUserCodeDeliveryDetails will indicate where the confirmation code was sent
-                    // Get the confirmation code from user
-                    System.out.println("******** USER MUST BE CONFIRMED *******");
-                }
-                else {
-                    // The user has already been confirmed
-                    System.out.println("****** USER DOESN\'t NEED TO BE CONFIRMED *****");
-                }
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                // Sign-up failed, check exception for the cause
-                System.out.println("**** SING UP FAILED: "+exception);
-            }
-        };
-
         userPool.signUpInBackground("evforward123@gmail.com", "12345678", userAttributes, null, signupCallback);
     }
+
+    SignUpHandler signupCallback = new SignUpHandler() {
+
+        @Override
+        public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
+            // Sign-up was successful
+            System.out.println("****** SIGN UP SUCCESSFUL ******");
+
+            // Check if this user (cognitoUser) has to be confirmed
+            if(!userConfirmed) {
+                // This user has to be confirmed and a confirmation code was sent to the user
+                // cognitoUserCodeDeliveryDetails will indicate where the confirmation code was sent
+                // Get the confirmation code from user
+                System.out.println("******** USER MUST BE CONFIRMED *******");
+            }
+            else {
+                // The user has already been confirmed
+                System.out.println("****** USER DOESN\'t NEED TO BE CONFIRMED *****");
+            }
+        }
+
+        @Override
+        public void onFailure(Exception exception) {
+            // Sign-up failed, check exception for the cause
+            System.out.println("**** SING UP FAILED: "+exception);
+        }
+    };
 
 }
 
