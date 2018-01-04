@@ -1,10 +1,24 @@
 <resources>
     <string name="app_name">Banter</string>
-    <string name="button_main_go_to_sign_in">Sign In</string>
-    <string name="button_main_go_to_sign_up">Sign Up</string>
-    <string name="text_view_sign_up_email">Enter email</string>
-    <string name="text_view_sign_up_password">Enter password</string>
+    <!--SignInOrUpActivity-->
+    <string name="button_sign_in_or_up_go_to_sign_in">Sign In</string>
+    <string name="button_sign_in_or_up_go_to_sign_up">Sign Up</string>
+    <!---->
+
+    <!--SignInActivity-->
+    <string name="text_sign_in_email">Enter email</string>
+    <string name="text_sign_in_password">Enter password</string>
+    <string name="button_sign_in">Sign in</string>
+    <!---->
+
+    <!--SignUpActivity-->
+    <string name="text_sign_up_email">Enter email</string>
+    <string name="text_sign_up_password">Enter password</string>
     <string name="button_sign_up">Sign up</string>
-    <string name="text_view_sign_up_confirm_conf_code">Confirmation code</string>
+    <!---->
+
+    <!--SignUpConfirmActivity-->
+    <string name="text_sign_up_confirm_conf_code">Confirmation code</string>
     <string name="button_sign_up_confirm_confirm">Confirm</string>
+    <!---->
 </resources>

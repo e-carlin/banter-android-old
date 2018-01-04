@@ -7,7 +7,7 @@
     tools:context="com.banter.banter.SignUpActivity">
 
     <EditText
-        android:id="@+id/editTextEmail"
+        android:id="@+id/text_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -15,13 +15,13 @@
         android:layout_marginTop="50dp"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:text="@string/text_view_sign_up_email"
+        android:text="@string/text_sign_up_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/text_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -29,13 +29,13 @@
         android:layout_marginTop="15dp"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="@string/text_view_sign_up_password"
+        android:text="@string/text_sign_up_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/text_email" />
 
     <Button
-        android:id="@+id/buttonSignUp"
+        android:id="@+id/button_sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -44,5 +44,5 @@
         android:text="@string/button_sign_up"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/text_password" />
 </android.support.constraint.ConstraintLayout>

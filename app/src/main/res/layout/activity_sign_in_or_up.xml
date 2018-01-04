@@ -7,19 +7,19 @@
     tools:context="com.banter.banter.SignInOrUpActivity">
 
     <Button
-        android:id="@+id/signIn"
+        android:id="@+id/button_sign_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="180dp"
-        android:text="@string/button_main_go_to_sign_in"
+        android:text="@string/button_sign_in_or_up_go_to_sign_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/signUp"
+        android:id="@+id/button_sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="180dp"
@@ -27,9 +27,9 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="SignUpButtonPressed"
-        android:text="@string/button_main_go_to_sign_up"
+        android:text="@string/button_sign_in_or_up_go_to_sign_up"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signIn" />
+        app:layout_constraintTop_toBottomOf="@+id/button_sign_in" />
 </android.support.constraint.ConstraintLayout>

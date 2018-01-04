@@ -30,9 +30,9 @@ public class SignUpConfirmActivity extends AppCompatActivity {
             }
         }
 
-        confCode = (EditText) findViewById((R.id.editTextConfCode));
+        confCode = (EditText) findViewById((R.id.text_confirmation_code));
 
-        confirm = (Button) findViewById(R.id.buttonConfirmCode);
+        confirm = (Button) findViewById(R.id.button_confirm);
         confirm.setOnClickListener((v) -> {
             AWSCognitoHelper.getCognitoUserPool().getUser(email).confirmSignUpInBackground(confCode.getText().toString(),
                     true, confHandler);

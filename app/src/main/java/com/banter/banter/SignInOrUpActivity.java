@@ -20,13 +20,13 @@ public class SignInOrUpActivity extends AppCompatActivity {
     }
 
     private void init() {
-        signIn = (Button) findViewById(R.id.signIn);
+        signIn = (Button) findViewById(R.id.button_sign_in);
         signIn.setOnClickListener((v) -> {
             Intent intent = new Intent(this, SignInActivity.class);
             startActivity(intent);
         });
 
-        signUp = (Button) findViewById(R.id.signUp);
+        signUp = (Button) findViewById(R.id.button_sign_up);
         signUp.setOnClickListener((v) -> {
             Intent intent = new Intent(this, SignUpActivity.class);
             startActivity(intent);

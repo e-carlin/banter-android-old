@@ -13,9 +13,9 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHan
 
 public class SignUpActivity extends AppCompatActivity {
 
-    private EditText email;
-    private EditText password;
-    private Button signUp;
+    private EditText emailField;
+    private EditText passwordField;
+    private Button signUpButton;
 
     private String userEmail;
     private String userPassword;
@@ -28,16 +28,16 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void init() {
-        email = (EditText) findViewById(R.id.editTextEmail);
-        password= (EditText) findViewById(R.id.editTextPassword);
+        emailField = (EditText) findViewById(R.id.text_email);
+        passwordField = (EditText) findViewById(R.id.text_password);
 
-        signUp = (Button) findViewById(R.id.buttonSignUp);
-        signUp.setOnClickListener((v) -> {
-            userEmail = email.getText().toString();
-            userPassword = password.getText().toString();
+        signUpButton = (Button) findViewById(R.id.buttonSignUp);
+        signUpButton.setOnClickListener((v) -> {
+            userEmail = emailField.getText().toString();
+            userPassword = passwordField.getText().toString();
 
             CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-            userAttributes.addAttribute("email", userEmail);
+            userAttributes.addAttribute("emailField", userEmail);
 
             AWSCognitoHelper.getCognitoUserPool().signUpInBackground(userEmail, userPassword, userAttributes, null, signupCallback);
         });
@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void confirmSignUp(CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
         Intent intent = new Intent(this, SignUpConfirmActivity.class);
-        intent.putExtra("email", userEmail);
+        intent.putExtra("emailField", userEmail);
         intent.putExtra("source","signup");
         intent.putExtra("destination", cognitoUserCodeDeliveryDetails.getDestination());
         intent.putExtra("deliveryMed", cognitoUserCodeDeliveryDetails.getDeliveryMedium());

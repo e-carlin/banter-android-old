@@ -7,7 +7,7 @@
     tools:context="com.banter.banter.SignUpConfirmActivity">
 
     <Button
-        android:id="@+id/buttonConfirmCode"
+        android:id="@+id/button_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -18,7 +18,7 @@
         tools:layout_editor_absoluteY="195dp" />
 
     <EditText
-        android:id="@+id/editTextConfCode"
+        android:id="@+id/text_confirmation_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -27,8 +27,8 @@
         android:layout_marginTop="120dp"
         android:ems="10"
         android:inputType="number"
-        android:text="@string/text_view_sign_up_confirm_conf_code"
-        app:layout_constraintBottom_toTopOf="@+id/buttonConfirmCode"
+        android:text="@string/text_sign_up_confirm_conf_code"
+        app:layout_constraintBottom_toTopOf="@+id/button_confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
