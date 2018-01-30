@@ -37,7 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
             userPassword = passwordField.getText().toString();
 
             CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-            userAttributes.addAttribute("emailField", userEmail);
+            userAttributes.addAttribute("email", userEmail);
 
             AWSCognitoHelper.getCognitoUserPool().signUpInBackground(userEmail, userPassword, userAttributes, null, signupCallback);
         });
@@ -73,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void confirmSignUp(CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
         Intent intent = new Intent(this, SignUpConfirmActivity.class);
-        intent.putExtra("emailField", userEmail);
+        intent.putExtra("email", userEmail);
         intent.putExtra("source","signup");
         intent.putExtra("destination", cognitoUserCodeDeliveryDetails.getDestination());
         intent.putExtra("deliveryMed", cognitoUserCodeDeliveryDetails.getDeliveryMedium());

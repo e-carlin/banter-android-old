@@ -24,11 +24,9 @@ public class SignUpConfirmActivity extends AppCompatActivity {
 
     private void init() {
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            if (extras.containsKey("email")) {
-                email = extras.getString("email");
-            }
-        }
+
+        email = extras.getString("email");
+
 
         confCode = (EditText) findViewById((R.id.text_confirmation_code));
 
@@ -48,6 +46,7 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onFailure(Exception exception) {
             System.out.println("***** USER CONFIRMATION FAILED *****");
+            System.out.println(exception);
         }
     };
 }
