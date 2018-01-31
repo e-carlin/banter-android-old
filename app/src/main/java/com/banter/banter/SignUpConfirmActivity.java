@@ -1,5 +1,6 @@
 package com.banter.banter;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -41,6 +42,8 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onSuccess() {
             System.out.println("***** USER CONFIRMATION SUCCESS *****");
+                Intent intent = new Intent(SignUpConfirmActivity.this, SignInActivity.class);
+                startActivity(intent);
         }
 
         @Override

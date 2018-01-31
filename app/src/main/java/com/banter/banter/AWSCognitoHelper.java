@@ -18,7 +18,10 @@ public class AWSCognitoHelper {
     private static final Regions cognitoRegion = Regions.US_EAST_1;
 
     public static void init(Context context) {
-        userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
+
+        if(userPool == null) {
+            userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
+        }
     }
 
     public static CognitoUserPool getCognitoUserPool() { return userPool; }
