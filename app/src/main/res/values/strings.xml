@@ -21,5 +21,6 @@
     <string name="text_sign_up_confirm_conf_code">Confirmation code</string>
     <string name="button_sign_up_confirm_confirm">Confirm</string>
     <string name="title_activity_user_details">UserDetails</string>
+    <string name="text_sign_up_confirmation_code">123456</string>
     <!---->
 </resources>

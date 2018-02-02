@@ -27,7 +27,7 @@
             android:parentActivityName=".SignInOrUpActivity" />
         <activity android:name=".SignUpConfirmActivity" />
         <activity
-            android:name=".UserDetails"
+            android:name=".UserDetailsActivity"
             android:label="@string/title_activity_user_details"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>

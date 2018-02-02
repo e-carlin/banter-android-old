@@ -3,6 +3,7 @@ package com.banter.banter;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -12,6 +13,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDel
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
 
 public class SignUpActivity extends AppCompatActivity {
+    private static final String TAG = "SignUpActivity";
 
     private EditText emailField;
     private EditText passwordField;
@@ -28,11 +30,16 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void init() {
+        Log.i(TAG, "Initializing activity");
         emailField = (EditText) findViewById(R.id.text_email);
+        emailField.setHint(getString(R.string.text_sign_up_email));
+
         passwordField = (EditText) findViewById(R.id.text_password);
+        passwordField.setHint(getString(R.string.text_sign_up_password));
 
         signUpButton = (Button) findViewById(R.id.button_sign_up);
         signUpButton.setOnClickListener((v) -> {
+            Log.i(TAG, "User sign up button pressed");
             userEmail = emailField.getText().toString();
             userPassword = passwordField.getText().toString();
 
@@ -47,27 +54,27 @@ public class SignUpActivity extends AppCompatActivity {
 
         @Override
         public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
-            // Sign-up was successful
-            System.out.println("****** SIGN UP SUCCESSFUL ******");
+            Log.d(TAG, "User sign up was succesful");
 
             // Check if this user (cognitoUser) has to be confirmed
             if(!userConfirmed) {
                 // This user has to be confirmed and a confirmation code was sent to the user
                 // cognitoUserCodeDeliveryDetails will indicate where the confirmation code was sent
                 // Get the confirmation code from user
-                System.out.println("******** USER MUST BE CONFIRMED *******");
+                Log.d(TAG, "User must be confirmed.");
                 confirmSignUp(cognitoUserCodeDeliveryDetails);
             }
             else {
-                // The user has already been confirmed
-                System.out.println("****** USER DOESN\'t NEED TO BE CONFIRMED *****");
+                Log.d(TAG, "User does not need to be confirmed");
+                Intent intent = new Intent(SignUpActivity.this, UserDetailsActivity.class);
+                startActivity(intent);
             }
         }
 
         @Override
         public void onFailure(Exception exception) {
             // Sign-up failed, check exception for the cause
-            System.out.println("**** SING UP FAILED: "+exception);
+            Log.e(TAG, "User sign up failed: "+exception);
         }
     };
 
