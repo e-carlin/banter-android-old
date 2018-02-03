@@ -1,19 +1,26 @@
 package com.banter.banter;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.ChallengeContinuation;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.MultiFactorAuthenticationContinuation;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.exceptions.CognitoInternalErrorException;
+import com.amazonaws.mobileconnectors.cognitoidentityprovider.exceptions.CognitoParameterInvalidException;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.services.cognitoidentityprovider.model.UserNotFoundException;
 
 public class SignInActivity extends AppCompatActivity {
     private static final String TAG = "SingInActivity";
@@ -47,9 +54,26 @@ public class SignInActivity extends AppCompatActivity {
             Log.i(TAG, "Sign in button pressed");
             userEmail = emailField.getText().toString();
             userPassword = passwordField.getText().toString();
-
-            AWSCognitoHelper.getCognitoUserPool().getUser(userEmail).getSessionInBackground(authenticationHandler);
+            if(validEmailAndPassword(userEmail, userPassword)) {
+                AWSCognitoHelper.getCognitoUserPool().getUser(userEmail).getSessionInBackground(authenticationHandler);
+            }
         });
+    }
+
+    private boolean validEmailAndPassword(String email, String password) {
+        if(email.isEmpty()){
+            emailField.setError("Cannot be empty");
+            return false;
+        }
+        if(password.isEmpty()) {
+            passwordField.setError("Cannot be empty");
+            return false;
+        }
+        if(password.length() < 6) {
+            passwordField.setError("Must be at least 6 characters long");
+        }
+        //TODO: Add more password validation and maybe a valid email regex.
+        return true;
     }
 
     AuthenticationHandler authenticationHandler = new AuthenticationHandler() {
@@ -87,9 +111,34 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         public void onFailure(Exception exception) {
-            //TODO: Implement
-            Log.d(TAG, "User sign in failed: " + exception);
-            // Sign-in failed, check exception for the cause
+            String errorMessage = "There was an error. Please try again.";
+            if(exception instanceof UserNotFoundException){
+                errorMessage = "Email not found.";
+                emailField.setError(errorMessage);
+                return;
+            }
+            if(exception instanceof CognitoParameterInvalidException && exception.getMessage().contains("user ID cannot be null")) {
+                errorMessage = "Cannot be empty";
+                emailField.setError(errorMessage);
+                return;
+            }
+            if(exception instanceof CognitoInternalErrorException && exception.getMessage().contains("Failed to authenticate user")) {
+                errorMessage = "The credentials you supplied did not match";
+
+            }
+            AlertDialog alertDialog = new AlertDialog.Builder(SignInActivity.this).create();
+            alertDialog.setTitle("Sign in error");
+            alertDialog.setMessage(errorMessage);
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            alertDialog.show();
+            Log.d(TAG, "User sign in failed: "+exception);
+            Log.d(TAG, "Here is the message given to the user: "+errorMessage);
+//            Toast.makeText(getApplicationContext(),errorMessage, Toast.LENGTH_SHORT).show();
         }
 
         @Override

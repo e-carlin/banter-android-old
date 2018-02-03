@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Banter.iml" filepath="$PROJECT_DIR$/Banter.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\evan.carlin\AndroidStudioProjects\banter-android\Banter.iml" filepath="C:\Users\evan.carlin\AndroidStudioProjects\banter-android\Banter.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/banter-android.iml" filepath="$PROJECT_DIR$/banter-android.iml" />
     </modules>
