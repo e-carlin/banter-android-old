@@ -20,6 +20,7 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.Mult
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.exceptions.CognitoInternalErrorException;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.exceptions.CognitoParameterInvalidException;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.AuthenticationHandler;
+import com.amazonaws.services.cognitoidentityprovider.model.NotAuthorizedException;
 import com.amazonaws.services.cognitoidentityprovider.model.UserNotFoundException;
 
 public class SignInActivity extends AppCompatActivity {
@@ -54,17 +55,21 @@ public class SignInActivity extends AppCompatActivity {
             Log.i(TAG, "Sign in button pressed");
             userEmail = emailField.getText().toString();
             userPassword = passwordField.getText().toString();
-            if(validEmailAndPassword(userEmail, userPassword)) {
+            if(validEmail(userEmail) && validPassword(userPassword)) {
                 AWSCognitoHelper.getCognitoUserPool().getUser(userEmail).getSessionInBackground(authenticationHandler);
             }
         });
     }
 
-    private boolean validEmailAndPassword(String email, String password) {
+    private boolean validEmail(String email) {
         if(email.isEmpty()){
             emailField.setError("Cannot be empty");
             return false;
         }
+        // TODO: Add email valid regex
+        return true;
+    }
+    private boolean validPassword(String password) {
         if(password.isEmpty()) {
             passwordField.setError("Cannot be empty");
             return false;
@@ -72,7 +77,7 @@ public class SignInActivity extends AppCompatActivity {
         if(password.length() < 6) {
             passwordField.setError("Must be at least 6 characters long");
         }
-        //TODO: Add more password validation and maybe a valid email regex.
+        //TODO: Add more password validation
         return true;
     }
 
@@ -80,7 +85,7 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         public void onSuccess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
-            Log.d(TAG, " -- Auth Success");
+            Log.d(TAG, "Success signing in");
 //            AppHelper.setCurrSession(cognitoUserSession);
 //            AppHelper.newDevice(device);
             Intent intent = new Intent(SignInActivity.this, UserDetailsActivity.class);
@@ -109,23 +114,40 @@ public class SignInActivity extends AppCompatActivity {
 //            multiFactorAuthenticationContinuation.continueTask();
         }
 
+        //TODO: Clean up the log statements
         @Override
         public void onFailure(Exception exception) {
             String errorMessage = "There was an error. Please try again.";
+            Log.e(TAG, "M: "+exception.getMessage());
             if(exception instanceof UserNotFoundException){
+                Log.d(TAG, "Sign in failed. Email not found. Exception: "+exception);
+                Log.d(TAG, Log.getStackTraceString(exception));
+
                 errorMessage = "Email not found.";
                 emailField.setError(errorMessage);
                 return;
             }
             if(exception instanceof CognitoParameterInvalidException && exception.getMessage().contains("user ID cannot be null")) {
+                Log.d(TAG, "Sign in failed. Email field empty. Exception: "+exception);
+                Log.d(TAG, Log.getStackTraceString(exception));
+
                 errorMessage = "Cannot be empty";
                 emailField.setError(errorMessage);
                 return;
             }
-            if(exception instanceof CognitoInternalErrorException && exception.getMessage().contains("Failed to authenticate user")) {
+            //I Think the text for this message isn't the message that corresponds with credentials did not mathc
+            if((exception instanceof CognitoInternalErrorException && exception.getMessage().contains("Failed to authenticate user")) ||
+                    (exception instanceof NotAuthorizedException && exception.getMessage().contains("Incorrect username or password"))) {
+                Log.d(TAG, "Sign in failed. Credentials did not match. Exception: "+exception);
+                Log.d(TAG, Log.getStackTraceString(exception));
+
                 errorMessage = "The credentials you supplied did not match";
 
             }
+            Log.e(TAG, "CLASS: "+exception.getClass());
+            Log.d(TAG, "Sign in failed: "+exception);
+            Log.d(TAG, Log.getStackTraceString(exception));
+
             AlertDialog alertDialog = new AlertDialog.Builder(SignInActivity.this).create();
             alertDialog.setTitle("Sign in error");
             alertDialog.setMessage(errorMessage);
@@ -136,9 +158,6 @@ public class SignInActivity extends AppCompatActivity {
                         }
                     });
             alertDialog.show();
-            Log.d(TAG, "User sign in failed: "+exception);
-            Log.d(TAG, "Here is the message given to the user: "+errorMessage);
-//            Toast.makeText(getApplicationContext(),errorMessage, Toast.LENGTH_SHORT).show();
         }
 
         @Override

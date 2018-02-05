@@ -43,6 +43,8 @@ public class SignUpActivity extends AppCompatActivity {
             userEmail = emailField.getText().toString();
             userPassword = passwordField.getText().toString();
 
+            Log.e(TAG, "Email: "+userEmail+" Pass: "+userPassword);
+
             CognitoUserAttributes userAttributes = new CognitoUserAttributes();
             userAttributes.addAttribute("email", userEmail);
 

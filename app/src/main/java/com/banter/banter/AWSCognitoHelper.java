@@ -12,10 +12,10 @@ import com.amazonaws.regions.Regions;
 public class AWSCognitoHelper {
     private static CognitoUserPool userPool;
 
-    private static final String userPoolId = "us-east-1_VU4GdCuOZ";
-    private static final String clientId = "b51em6hvi9kldqslihjlv650l";
-    private static final String clientSecret = "1kuh2j8lhfedi6q9cft73gq2rgmn07ujed1gqpdhl0t8r2gau29g";
     private static final Regions cognitoRegion = Regions.US_EAST_1;
+    private static final String userPoolId = "us-east-1_DoNQrJT2d";
+    private static final String clientId = "629iht78elltqnlugt00522r11";
+    private static final String clientSecret = "19djfjs1nf80opps84g43r46u7ollfkckqi7acs5iafjcqsiujsv";
 
     public static void init(Context context) {
         userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);
