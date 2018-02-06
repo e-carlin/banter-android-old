@@ -13,6 +13,8 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+//TODO: Lots of work to be done in here cleaning things up and doing proper error handling
+
 public class PlaidAddAccountActivity extends AppCompatActivity {
 
     private final String PLAID_PUBLIC_KEY = "fb846942c3ce8e2945b4b1fd408333";
@@ -27,41 +29,18 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
     }
 
     private void openPlaidAddAccountWebView() {
-
-    }
-
-        // Initialize Link
-        HashMap<String, String> linkInitializeOptions = new HashMap<String,String>();
-        linkInitializeOptions.put("key", PLAID_PUBLIC_KEY);
-        linkInitializeOptions.put("product", "auth");
-        linkInitializeOptions.put("apiVersion", "v2"); // set this to "v1" if using the legacy Plaid API
-        linkInitializeOptions.put("env", "sandbox");
-        linkInitializeOptions.put("clientName", "Test App");
-        linkInitializeOptions.put("selectAccount", "true");
-        linkInitializeOptions.put("webhook", "http://requestb.in");
-        linkInitializeOptions.put("baseUrl", "https://cdn.plaid.com/link/v2/stable/link.html");
-        // If initializing Link in PATCH / update mode, also provide the public_token
-        // linkInitializeOptions.put("public_token", "PUBLIC_TOKEN")
-
-        // Generate the Link initialization URL based off of the configuration options.
+        //Get link configuration options
+        final HashMap<String, String> linkInitializeOptions = getLinkInitializeOptions();
+        // Generate the Link initialization URL based off of the configuration options
         final Uri linkInitializationUrl = generateLinkInitializationUrl(linkInitializeOptions);
-
-        // Modify Webview settings - all of these settings may not be applicable
-        // or necesscary for your integration.
-        final WebView plaidLinkWebview = (WebView) findViewById(R.id.web_view_add_account);
-        WebSettings webSettings = plaidLinkWebview.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        WebView.setWebContentsDebuggingEnabled(true);
-
-        // Initialize Link by loading the Link initiaization URL in the Webview
-        plaidLinkWebview.loadUrl(linkInitializationUrl.toString());
-
-        // Override the Webview's handler for redirects
+        //Get configured webView object
+        final WebView plaidLinkWebView = getConfiguredPlaidLinkWebView();
+        // Initialize Link by loading the Link initiaization URL in the WebView
+        plaidLinkWebView.loadUrl(linkInitializationUrl.toString());
+        // Override the WebView's handler for redirects
         // Link communicates success and failure (analogous to the web's onSuccess and onExit
         // callbacks) via redirects.
-        plaidLinkWebview.setWebViewClient(new WebViewClient() {
+        plaidLinkWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // Parse the URL to determine if it's a special Plaid Link redirect or a request
@@ -75,9 +54,11 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                     JSONObject json = new JSONObject(linkData);
 
                     if (action.equals("connected")) {
+                        //Success! We got the details from Plaid
+                        // Now send them to our API
 
                         System.out.println("***************************************");
-                        System.out.println("JSON: "+json);
+                        System.out.println("JSON FROM HASH: "+json);
                         for (String name: linkData.keySet()){
 
                             String key =name.toString();
@@ -87,9 +68,8 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                         System.out.println("***************************************");
 
 
-                        // Reload Link in the Webview
-                        // You will likely want to transition the view at this point.
-                        plaidLinkWebview.loadUrl(linkInitializationUrl.toString());
+                        //TODO: Go to UserDetails activity
+                        plaidLinkWebView.loadUrl(linkInitializationUrl.toString());
                     } else if (action.equals("exit")) {
                         // User exited
                         // linkData may contain information about the user's status in the Link flow,
@@ -101,9 +81,9 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                         Log.d("Link request ID: ", linkData.get("link_request_id"));
                         Log.d("API request ID: ", linkData.get("plaid_api_request_id"));
 
-                        // Reload Link in the Webview
+                        // Reload Link in the WebView
                         // You will likely want to transition the view at this point.
-                        plaidLinkWebview.loadUrl(linkInitializationUrl.toString());
+                        plaidLinkWebView.loadUrl(linkInitializationUrl.toString());
                     } else {
                         Log.d("Link action detected: ", action);
                     }
@@ -122,6 +102,35 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private WebView getConfiguredPlaidLinkWebView() {
+        // Modify WebView settings
+        // TODO: Determine which of these settings I need or not
+        final WebView plaidLinkWebView = (WebView) findViewById(R.id.web_view_add_account);
+        WebSettings webSettings = plaidLinkWebView.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        WebView.setWebContentsDebuggingEnabled(true);
+
+        return plaidLinkWebView;
+    }
+
+    private HashMap<String, String> getLinkInitializeOptions() {
+        HashMap<String, String> linkInitializeOptions = new HashMap<String,String>();
+        linkInitializeOptions.put("key", PLAID_PUBLIC_KEY);
+        linkInitializeOptions.put("product", "auth");
+        linkInitializeOptions.put("apiVersion", "v2"); // set this to "v1" if using the legacy Plaid API
+        linkInitializeOptions.put("env", "sandbox");
+        linkInitializeOptions.put("clientName", "Test App");
+        linkInitializeOptions.put("selectAccount", "true");
+        linkInitializeOptions.put("webhook", "http://requestb.in");
+        linkInitializeOptions.put("baseUrl", "https://cdn.plaid.com/link/v2/stable/link.html");
+        // If initializing Link in PATCH / update mode, also provide the public_token
+        // linkInitializeOptions.put("public_token", "PUBLIC_TOKEN")
+
+        return linkInitializeOptions;
     }
 
     // Generate a Link initialization URL based on a set of configuration options
