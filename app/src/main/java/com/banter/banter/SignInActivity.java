@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.amazonaws.AmazonClientException;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.continuations.AuthenticationContinuation;
@@ -94,7 +92,6 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
-            System.out.println("GETTING DETAILS");
             // The API needs user sign-in credentials to continue
             AuthenticationDetails authenticationDetails = new AuthenticationDetails(userId, userPassword, null);
 
@@ -114,11 +111,9 @@ public class SignInActivity extends AppCompatActivity {
 //            multiFactorAuthenticationContinuation.continueTask();
         }
 
-        //TODO: Clean up the log statements
         @Override
         public void onFailure(Exception exception) {
             String errorMessage = "There was an error. Please try again.";
-            Log.e(TAG, "M: "+exception.getMessage());
             if(exception instanceof UserNotFoundException){
                 Log.d(TAG, "Sign in failed. Email not found. Exception: "+exception);
                 Log.d(TAG, Log.getStackTraceString(exception));
@@ -141,10 +136,9 @@ public class SignInActivity extends AppCompatActivity {
                 Log.d(TAG, "Sign in failed. Credentials did not match. Exception: "+exception);
                 Log.d(TAG, Log.getStackTraceString(exception));
 
-                errorMessage = "The credentials you supplied did not match";
+                errorMessage = "Your username or password is incorrect";
 
             }
-            Log.e(TAG, "CLASS: "+exception.getClass());
             Log.d(TAG, "Sign in failed: "+exception);
             Log.d(TAG, Log.getStackTraceString(exception));
 

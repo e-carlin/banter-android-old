@@ -43,16 +43,12 @@ public class SignUpActivity extends AppCompatActivity {
             userEmail = emailField.getText().toString();
             userPassword = passwordField.getText().toString();
 
-            Log.e(TAG, "Email: "+userEmail+" Pass: "+userPassword);
-
             CognitoUserAttributes userAttributes = new CognitoUserAttributes();
-            userAttributes.addAttribute("email", userEmail);
-
-            AWSCognitoHelper.getCognitoUserPool().signUpInBackground(userEmail, userPassword, userAttributes, null, signupCallback);
+            AWSCognitoHelper.getCognitoUserPool().signUpInBackground(userEmail, userPassword, userAttributes, null, signupHandler);
         });
     }
 
-    SignUpHandler signupCallback = new SignUpHandler() {
+    SignUpHandler signupHandler = new SignUpHandler() {
 
         @Override
         public void onSuccess(CognitoUser cognitoUser, boolean userConfirmed, CognitoUserCodeDeliveryDetails cognitoUserCodeDeliveryDetails) {
@@ -87,7 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
         intent.putExtra("destination", cognitoUserCodeDeliveryDetails.getDestination());
         intent.putExtra("deliveryMed", cognitoUserCodeDeliveryDetails.getDeliveryMedium());
         intent.putExtra("attribute", cognitoUserCodeDeliveryDetails.getAttributeName());
-        startActivityForResult(intent, 10);
+        startActivity(intent);
     }
 
 }

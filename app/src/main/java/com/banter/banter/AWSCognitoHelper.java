@@ -13,9 +13,9 @@ public class AWSCognitoHelper {
     private static CognitoUserPool userPool;
 
     private static final Regions cognitoRegion = Regions.US_EAST_1;
-    private static final String userPoolId = "us-east-1_DoNQrJT2d";
-    private static final String clientId = "629iht78elltqnlugt00522r11";
-    private static final String clientSecret = "19djfjs1nf80opps84g43r46u7ollfkckqi7acs5iafjcqsiujsv";
+    private static final String userPoolId = "us-east-1_M0GwiV1g7";
+    private static final String clientId = "77b82fsn31abs9p13uir9f6nt0";
+    private static final String clientSecret = "1265kol92vp06blr6f2u4fl1tc5cqtag2l373h47qp61vd9dfqcd";
 
     public static void init(Context context) {
         userPool = new CognitoUserPool(context, userPoolId, clientId, clientSecret, cognitoRegion);

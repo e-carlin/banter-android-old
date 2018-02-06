@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.amazonaws.auth.AWSCognitoIdentityProvider;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
@@ -20,6 +21,8 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     private EditText userEmail;
     private Button signOut;
+    private Button addAccount;
+    private CognitoUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,22 +34,29 @@ public class UserDetailsActivity extends AppCompatActivity {
 
     private void init() {
 
-        signOut = (Button) findViewById(R.id.button_sign_out);
-        signOut.setOnClickListener((v) -> {
+        this.user = AWSCognitoHelper.getCognitoUserPool().getCurrentUser();
+
+        this.userEmail = (EditText) findViewById(R.id.text_user_email);
+        this.userEmail.setText(this.user.getUserId());
+
+        this.addAccount = (Button) findViewById(R.id.button_add_account);
+        this.addAccount.setText(R.string.button_add_account);
+        this.addAccount.setOnClickListener((v) -> {
+            Log.d(TAG, "Add account button pressed");
+
+            //TODO: Initiate plaid add account workflow
+        });
+
+        this.signOut = (Button) findViewById(R.id.button_sign_out);
+        this.signOut.setText(R.string.button_sign_out);
+        this.signOut.setOnClickListener((v) -> {
             Log.d(TAG, "Sign out button pressed");
 
-
-            AWSCognitoHelper.getCognitoUserPool().getCurrentUser().signOut();
+            this.user.signOut();
 
             Intent intent = new Intent(UserDetailsActivity.this, SignInOrUpActivity.class);
             startActivity(intent);
 
         });
-
-
-
-//        userEmail = (EditText) findViewById(R.id.text_email);
-//        userEmail.setText(user.getUserId());
-//        userEmail.setText("HELLO USER");
     }
 }
