@@ -1,4 +1,4 @@
-package com.banter.banter;
+package com.banter.banter.api;
 
 import android.content.Context;
 

@@ -8,18 +8,17 @@ import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
+import com.banter.banter.api.API;
 import org.json.JSONObject;
-
 import java.util.HashMap;
 
 //TODO: Lots of work to be done in here cleaning things up and doing proper error handling
 
 public class PlaidAddAccountActivity extends AppCompatActivity {
+    private final static String TAG= "PlaidAddAccountActivity";
 
     private final String PLAID_PUBLIC_KEY = "fb846942c3ce8e2945b4b1fd408333";
 
-    WebView addAccountView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,14 +28,11 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
     }
 
     private void openPlaidAddAccountWebView() {
-        //Get link configuration options
-        final HashMap<String, String> linkInitializeOptions = getLinkInitializeOptions();
-        // Generate the Link initialization URL based off of the configuration options
-        final Uri linkInitializationUrl = generateLinkInitializationUrl(linkInitializeOptions);
-        //Get configured webView object
+        final HashMap<String, String> linkInitializationOptions = getLinkInitializationOptions();
+        final Uri linkInitializationUrl = generateLinkInitializationUrl(linkInitializationOptions);
         final WebView plaidLinkWebView = getConfiguredPlaidLinkWebView();
-        // Initialize Link by loading the Link initiaization URL in the WebView
         plaidLinkWebView.loadUrl(linkInitializationUrl.toString());
+
         // Override the WebView's handler for redirects
         // Link communicates success and failure (analogous to the web's onSuccess and onExit
         // callbacks) via redirects.
@@ -51,39 +47,15 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                 if (parsedUri.getScheme().equals("plaidlink")) {
                     String action = parsedUri.getHost();
                     HashMap<String, String> linkData = parseLinkUriData(parsedUri);
-                    JSONObject json = new JSONObject(linkData);
 
                     if (action.equals("connected")) {
-                        //Success! We got the details from Plaid
-                        // Now send them to our API
-
-                        System.out.println("***************************************");
-                        System.out.println("JSON FROM HASH: "+json);
-                        for (String name: linkData.keySet()){
-
-                            String key =name.toString();
-                            String value = linkData.get(name).toString();
-                            System.out.println(key + " " + value);
-                        }
-                        System.out.println("***************************************");
-
-
-                        //TODO: Go to UserDetails activity
-                        plaidLinkWebView.loadUrl(linkInitializationUrl.toString());
+                        //Success! We got the account details from Plaid
+                        // Now send the account details to our API
+                        API.sendPlaidPublicToken(PlaidAddAccountActivity.this, new JSONObject(linkData));
                     } else if (action.equals("exit")) {
                         // User exited
-                        // linkData may contain information about the user's status in the Link flow,
-                        // the institution selected, information about any error encountered,
-                        // and relevant API request IDs.
-                        Log.d("User status in flow: ", linkData.get("status"));
-                        // The requet ID keys may or may not exist depending on when the user exited
-                        // the Link flow.
-                        Log.d("Link request ID: ", linkData.get("link_request_id"));
-                        Log.d("API request ID: ", linkData.get("plaid_api_request_id"));
-
-                        // Reload Link in the WebView
-                        // You will likely want to transition the view at this point.
-                        plaidLinkWebView.loadUrl(linkInitializationUrl.toString());
+                        Log.w(TAG, "User exited the Plaid link workflow");
+                        startActivity(new Intent(PlaidAddAccountActivity.this, UserDetailsActivity.class));
                     } else {
                         Log.d("Link action detected: ", action);
                     }
@@ -117,8 +89,8 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
         return plaidLinkWebView;
     }
 
-    private HashMap<String, String> getLinkInitializeOptions() {
-        HashMap<String, String> linkInitializeOptions = new HashMap<String,String>();
+    private HashMap<String, String> getLinkInitializationOptions() {
+        HashMap<String, String> linkInitializeOptions = new HashMap<>();
         linkInitializeOptions.put("key", PLAID_PUBLIC_KEY);
         linkInitializeOptions.put("product", "auth");
         linkInitializeOptions.put("apiVersion", "v2"); // set this to "v1" if using the legacy Plaid API
@@ -149,7 +121,7 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
 
     // Parse a Link redirect URL querystring into a HashMap for easy manipulation and access
     private HashMap<String,String> parseLinkUriData(Uri linkUri) {
-        HashMap<String,String> linkData = new HashMap<String,String>();
+        HashMap<String,String> linkData = new HashMap<>();
         for(String key : linkUri.getQueryParameterNames()) {
             linkData.put(key, linkUri.getQueryParameter(key));
         }

@@ -43,7 +43,6 @@ public class SignInActivity extends AppCompatActivity {
         Log.i(TAG, "Initializing activity");
         emailField = (EditText) findViewById(R.id.text_email);
         emailField.setHint(getString(R.string.text_sign_in_email));
-        emailField.setHint("HI EVAN");
 
         passwordField = (EditText) findViewById(R.id.text_password);
         passwordField.setHint(getString(R.string.text_sign_in_password));
