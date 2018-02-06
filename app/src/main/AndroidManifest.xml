@@ -29,7 +29,8 @@
         <activity
             android:name=".UserDetailsActivity"
             android:label="@string/title_activity_user_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".PlaidAddAccountActivity"></activity>
     </application>
 
 </manifest>

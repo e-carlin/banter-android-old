@@ -44,7 +44,8 @@ public class UserDetailsActivity extends AppCompatActivity {
         this.addAccount.setOnClickListener((v) -> {
             Log.d(TAG, "Add account button pressed");
 
-            //TODO: Initiate plaid add account workflow
+            Intent intent = new Intent(this, PlaidAddAccountActivity.class);
+            startActivity(intent);
         });
 
         this.signOut = (Button) findViewById(R.id.button_sign_out);
