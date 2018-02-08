@@ -83,7 +83,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         public void onSuccess(CognitoUserSession cognitoUserSession, CognitoDevice device) {
             Log.d(TAG, "Success signing in");
-//            AppHelper.setCurrSession(cognitoUserSession);
+            AWSCognitoHelper.setCurrSession(cognitoUserSession);
 //            AppHelper.newDevice(device);
             Intent intent = new Intent(SignInActivity.this, UserDetailsActivity.class);
             startActivity(intent);

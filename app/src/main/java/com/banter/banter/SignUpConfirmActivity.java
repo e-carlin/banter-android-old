@@ -48,6 +48,9 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onSuccess() {
             Log.i(TAG, "Succes confirming user sign up");
+
+
+
             Intent intent = new Intent(SignUpConfirmActivity.this, UserDetailsActivity.class);
             startActivity(intent);
         }
