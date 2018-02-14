@@ -48,11 +48,7 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onSuccess() {
             Log.i(TAG, "Succes confirming user sign up");
-
-
-
-            Intent intent = new Intent(SignUpConfirmActivity.this, UserDetailsActivity.class);
-            startActivity(intent);
+            exit();
         }
 
         @Override
@@ -61,4 +57,10 @@ public class SignUpConfirmActivity extends AppCompatActivity {
             confCode.setError("Error. Please try again.");
         }
     };
+
+    private void exit() {
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
+        finish();
+    }
 }

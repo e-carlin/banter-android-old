@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoDevice;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession;
@@ -26,15 +27,21 @@ public class SignInActivity extends AppCompatActivity {
 
     private EditText emailField;
     private EditText passwordField;
+    private TextView signUpMessage;
     private Button signInButton;
+    private Button signUpButton;
 
-    private String userEmail;
-    private String userPassword;
+    private String emailText;
+    private String passwordText;
+
+    private static final int SIGN_UP_USER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
+
+        AWSCognitoHelper.init(getApplicationContext()); //TODO: This should probably be done somewhere else, at the very least not on the ui thread
 
         init();
     }
@@ -48,17 +55,54 @@ public class SignInActivity extends AppCompatActivity {
         passwordField.setHint(getString(R.string.text_sign_in_password));
 
         signInButton = (Button) findViewById(R.id.button_sign_in);
+        signInButton.setText(R.string.button_sign_in);
         signInButton.setOnClickListener((v) -> {
             Log.i(TAG, "Sign in button pressed");
-            userEmail = emailField.getText().toString();
-            userPassword = passwordField.getText().toString();
-            if(validEmail(userEmail) && validPassword(userPassword)) {
-                AWSCognitoHelper.getCognitoUserPool().getUser(userEmail).getSessionInBackground(authenticationHandler);
+            emailText = emailField.getText().toString();
+            passwordText = passwordField.getText().toString();
+            if(isValidEmail(emailText) && validPassword(passwordText)) {
+                AWSCognitoHelper.getCognitoUserPool().getUser(emailText).getSessionInBackground(authenticationHandler);
             }
+        });
+
+        signUpMessage = (TextView) findViewById(R.id.text_sign_up_message);
+        signUpMessage.setText(R.string.text_sign_up_message);
+
+        signUpButton = (Button) findViewById(R.id.button_sign_up);
+        signUpButton.setText(R.string.button_sign_up);
+        signUpButton.setOnClickListener((V) -> {
+            Log.i(TAG, "Sign up button pressed");
+            Intent intent = new Intent(this, SignUpActivity.class);
+            startActivityForResult(intent, SIGN_UP_USER_REQUEST);
         });
     }
 
-    private boolean validEmail(String email) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch(requestCode) {
+            case SIGN_UP_USER_REQUEST:
+                if(resultCode == RESULT_OK) {
+                    Log.i(TAG, "Back from sign up. Signing in for user with the credentials from sign up.");
+                    emailText = data.getStringExtra("email");
+                    emailField.setText(emailText);
+                    passwordText = data.getStringExtra("password");
+                    passwordField.setText(passwordText);
+                    if(!emailText.isEmpty() && !passwordText.isEmpty()) {
+                        AWSCognitoHelper.getCognitoUserPool().getUser(emailText).getSessionInBackground(authenticationHandler);
+                    }
+                    else {
+                        Log.w(TAG, "The username and/or password resulting from the signUpActivity were empty");
+                    }
+                }
+                else {
+                    //One example of how we can get to this state is if the usr presses the sign up button, and then in the signUpActivity clicks the back arrrow
+                    Log.w(TAG, "The result of signing up the user was not ok. We can't automatically sign them in.");
+                }
+        }
+    }
+
+    private boolean isValidEmail(String email) {
         if(email.isEmpty()){
             emailField.setError("Cannot be empty");
             return false;
@@ -92,7 +136,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         public void getAuthenticationDetails(AuthenticationContinuation authenticationContinuation, String userId) {
             // The API needs user sign-in credentials to continue
-            AuthenticationDetails authenticationDetails = new AuthenticationDetails(userId, userPassword, null);
+            AuthenticationDetails authenticationDetails = new AuthenticationDetails(userId, passwordText, null);
 
             // Pass the user sign-in credentials to the continuation
             authenticationContinuation.setAuthenticationDetails(authenticationDetails);

@@ -74,7 +74,7 @@ public class UserDetailsActivity extends AppCompatActivity {
 
             this.user.signOut();
 
-            Intent intent = new Intent(UserDetailsActivity.this, SignInOrUpActivity.class);
+            Intent intent = new Intent(UserDetailsActivity.this, SignInActivity.class);
             startActivity(intent);
 
         });
