@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
+import com.banter.banter.api.API;
 
 public class SignUpConfirmActivity extends AppCompatActivity {
     private static final String TAG = "SignUpConfirmActivity";
@@ -48,6 +49,7 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onSuccess() {
             Log.i(TAG, "Succes confirming user sign up");
+            API.registerUser(SignUpConfirmActivity.this, email);
             exit();
         }
 

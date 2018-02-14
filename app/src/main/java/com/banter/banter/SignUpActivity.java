@@ -11,6 +11,11 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
+import com.banter.banter.api.API;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
@@ -65,6 +70,10 @@ public class SignUpActivity extends AppCompatActivity {
             }
             else {
                 Log.d(TAG, "User does not need to be confirmed");
+
+
+                API.registerUser(SignUpActivity.this, emailText);
+
                 exit(emailText, passwordText);
             }
         }

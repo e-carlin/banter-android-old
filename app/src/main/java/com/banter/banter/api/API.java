@@ -12,10 +12,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.banter.banter.BuildConfig;
 import com.banter.banter.PlaidAddAccountActivity;
+import com.banter.banter.SignInActivity;
+import com.banter.banter.SignUpActivity;
 import com.banter.banter.UserDetailsActivity;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 
 /**
  * Created by evan.carlin on 2/6/2018.
@@ -26,6 +29,7 @@ public class API {
 
     private static final String API_BASE_URL = BuildConfig.API_BASE_URL;
     private static final String EXCHANGE_PUBLIC_TOKEN_ENDPOINT = "/exchange_plaid_public_token";
+    private static final String REGISTER_USER_ENDPOINT = "/user/register";
 
     public static void sendPlaidPublicToken(Context ctx, JSONObject data) {
         String url = API_BASE_URL+EXCHANGE_PUBLIC_TOKEN_ENDPOINT;
@@ -55,14 +59,13 @@ public class API {
                 }
                 Log.e(TAG, Log.getStackTraceString(error));
 
-               AlertDialog sendPublicTokenErrorAlertDialog = getSendPublicTokenErrorAlerDialog(ctx);
-               sendPublicTokenErrorAlertDialog.show();
+               showSendPublicTokenErrorAlerDialog(ctx);
             }
         });
         requestQueue.add(jsonRequest);
     }
 
-    private static AlertDialog getSendPublicTokenErrorAlerDialog(Context ctx) {
+    private static void showSendPublicTokenErrorAlerDialog(Context ctx) {
         AlertDialog alertDialog = new AlertDialog.Builder(ctx).create();
         alertDialog.setTitle("Error saving your account");
         alertDialog.setMessage("Sorry, our system encountered an error and was unable to save your account. Please try again.");
@@ -81,7 +84,41 @@ public class API {
                         ctx.startActivity(new Intent(ctx, UserDetailsActivity.class));
                     }
                 });
-        return alertDialog;
+        alertDialog.show();
+    }
+
+    public static void registerUser(Context ctx, String email) {
+        String url = API_BASE_URL+REGISTER_USER_ENDPOINT;
+        Log.d(TAG, "Sending register user request to our api. URL: "+url);
+        RequestQueue requestQueue = RequestQueueSingleton.getInstance(ctx).getRequestQueue();
+
+        HashMap<String, String> data = new HashMap<>();
+        data.put("email", email);
+
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        // Display the response string.
+                        Log.i(TAG, "Register user response is: "+response.toString());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Error registering user: "+error);
+                try {
+                    Log.e(TAG, "Error message: " + new String(error.networkResponse.data, "UTF-8"));
+                }
+                catch (UnsupportedEncodingException e) {
+                    Log.e(TAG, "Error parsing the register user error response body");
+                    Log.e(TAG, Log.getStackTraceString(e));
+                }
+                Log.e(TAG, Log.getStackTraceString(error));
+                //TODO: We should display some sort of error message to the user letting them know things are messed up.
+                //They will have an account in cognito but no account in our system
+            }
+        });
+        requestQueue.add(jsonRequest);
     }
 
 }
