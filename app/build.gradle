@@ -12,14 +12,14 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField 'String', 'API_BASE_URL', '"http://10.0.2.2:5000"'
+            buildConfigField 'String', 'BANTER_BASE_URL', '"http://10.0.2.2:5000"'
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField 'String', 'BASE_URL', '"http://prod.example.com/"'
+            buildConfigField 'String', 'BANTER_BASE_URL', '"http://prod.example.com/"'
         }
     }
     compileOptions {

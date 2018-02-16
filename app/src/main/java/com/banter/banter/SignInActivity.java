@@ -95,7 +95,7 @@ public class SignInActivity extends AppCompatActivity {
                         Log.w(TAG, "The username and/or password resulting from the signUpActivity were empty");
                     }
                 }
-                else {
+                else if (resultCode == RESULT_CANCELED){
                     //One example of how we can get to this state is if the usr presses the sign up button, and then in the signUpActivity clicks the back arrrow
                     Log.w(TAG, "The result of signing up the user was not ok. We can't automatically sign them in.");
                 }

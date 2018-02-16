@@ -8,7 +8,11 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
-import com.banter.banter.api.API;
+import com.android.volley.VolleyError;
+import com.banter.banter.api.RegisterUserResult;
+import com.banter.banter.api.UserAPI;
+
+import org.json.JSONObject;
 
 public class SignUpConfirmActivity extends AppCompatActivity {
     private static final String TAG = "SignUpConfirmActivity";
@@ -49,8 +53,7 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onSuccess() {
             Log.i(TAG, "Succes confirming user sign up");
-            API.registerUser(SignUpConfirmActivity.this, email);
-            exit();
+            registerUser(email);
         }
 
         @Override
@@ -60,7 +63,29 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         }
     };
 
-    private void exit() {
+    private void registerUser(String email) {
+        Log.e(TAG, "Register user called!!!!!!!!!!!!!!!!!");
+        RegisterUserResult registerUserResultCallback = new RegisterUserResult() {
+            @Override
+            public void notifySuccess(JSONObject response) {
+                //TODO: Change to log.i and call exitSuccess() instead of just logging
+                Log.e(TAG, "Success registering user");
+                Log.e(TAG, response.toString());
+                exitSuccess();
+            }
+
+            @Override
+            public void notifyError(VolleyError error) {
+                //TODO: Change to log.i and alert user of erro instead of just logging
+                Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
+                //TODO: we need way better handling here. This is a terrible state for the app to be in
+            }
+        };
+        UserAPI.registerUser(email, registerUserResultCallback, this);
+
+    }
+
+    private void exitSuccess() {
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);
         finish();

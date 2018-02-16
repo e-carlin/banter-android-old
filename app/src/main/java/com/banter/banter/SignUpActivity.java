@@ -11,11 +11,11 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
-import com.banter.banter.api.API;
+import com.android.volley.VolleyError;
+import com.banter.banter.api.RegisterUserResult;
+import com.banter.banter.api.UserAPI;
 
 import org.json.JSONObject;
-
-import java.util.HashMap;
 
 public class SignUpActivity extends AppCompatActivity {
     private static final String TAG = "SignUpActivity";
@@ -27,6 +27,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     private String emailText;
     private String passwordText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,9 +73,8 @@ public class SignUpActivity extends AppCompatActivity {
                 Log.d(TAG, "User does not need to be confirmed");
 
 
-                API.registerUser(SignUpActivity.this, emailText);
-
-                exit(emailText, passwordText);
+                registerUser(emailText);
+                exitSuccess(emailText, passwordText);
             }
         }
 
@@ -85,26 +85,55 @@ public class SignUpActivity extends AppCompatActivity {
         }
     };
 
+
+    private void registerUser(String email) {
+        Log.e(TAG, "Register user called!!!!!!!!!!!!!!!!!");
+        RegisterUserResult registerUserResultCallback = new RegisterUserResult() {
+            @Override
+            public void notifySuccess(JSONObject response) {
+                //TODO: Change to log.i and call exitSuccess() instead of just logging
+                Log.e(TAG, "Success registering user");
+                Log.e(TAG, response.toString());
+                exitSuccess(email, passwordText);
+            }
+
+            @Override
+            public void notifyError(VolleyError error) {
+                //TODO: Change to log.i and alert user of erro instead of just logging
+                Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
+            }
+        };
+        UserAPI.registerUser(email, registerUserResultCallback, this);
+    }
+
+
+
     protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
             case CONFIRM_USER_REQUEST:
                 if(resultCode == RESULT_OK) {
                     Log.i(TAG, "Success confirming user. Going back to sign up to log them in.");
-                    exit(emailText, passwordText);
+                    exitSuccess(emailText, passwordText);
                 }
                 else {
                     Log.e(TAG, "The result of confirming the user was not ok. We can't automatically sign them in.");
                     //TODO: Double check that this work and we don't get some null error when trying to putExtra with ""
-                    exit("","");
+                    exitError();
                 }
         }
     }
 
-    private void exit(String email, String password) {
+    private void exitSuccess(String email, String password) {
         Intent intent = new Intent();
         intent.putExtra("email", email);
         intent.putExtra("password", password);
         setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    private void exitError() {
+        Intent intent = new Intent();
+        setResult(RESULT_CANCELED, intent);
         finish();
     }
 

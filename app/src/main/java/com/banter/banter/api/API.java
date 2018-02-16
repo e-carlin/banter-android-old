@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class API {
     private static final String TAG = "APi";
 
-    private static final String API_BASE_URL = BuildConfig.API_BASE_URL;
+    private static final String API_BASE_URL = BuildConfig.BANTER_BASE_URL;
     private static final String EXCHANGE_PUBLIC_TOKEN_ENDPOINT = "/exchange_plaid_public_token";
     private static final String REGISTER_USER_ENDPOINT = "/user/register";
 
@@ -85,40 +85,6 @@ public class API {
                     }
                 });
         alertDialog.show();
-    }
-
-    public static void registerUser(Context ctx, String email) {
-        String url = API_BASE_URL+REGISTER_USER_ENDPOINT;
-        Log.d(TAG, "Sending register user request to our api. URL: "+url);
-        RequestQueue requestQueue = RequestQueueSingleton.getInstance(ctx).getRequestQueue();
-
-        HashMap<String, String> data = new HashMap<>();
-        data.put("email", email);
-
-        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(data),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // Display the response string.
-                        Log.i(TAG, "Register user response is: "+response.toString());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG, "Error registering user: "+error);
-                try {
-                    Log.e(TAG, "Error message: " + new String(error.networkResponse.data, "UTF-8"));
-                }
-                catch (UnsupportedEncodingException e) {
-                    Log.e(TAG, "Error parsing the register user error response body");
-                    Log.e(TAG, Log.getStackTraceString(e));
-                }
-                Log.e(TAG, Log.getStackTraceString(error));
-                //TODO: We should display some sort of error message to the user letting them know things are messed up.
-                //They will have an account in cognito but no account in our system
-            }
-        });
-        requestQueue.add(jsonRequest);
     }
 
 }
