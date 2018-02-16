@@ -1,6 +1,8 @@
 package com.banter.banter;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,8 +13,8 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUser;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserAttributes;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserCodeDeliveryDetails;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.SignUpHandler;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.banter.banter.api.RegisterUserResult;
 import com.banter.banter.api.UserAPI;
 
 import org.json.JSONObject;
@@ -71,8 +73,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
             else {
                 Log.d(TAG, "User does not need to be confirmed");
-
-
                 registerUser(emailText);
                 exitSuccess(emailText, passwordText);
             }
@@ -87,23 +87,31 @@ public class SignUpActivity extends AppCompatActivity {
 
 
     private void registerUser(String email) {
-        Log.e(TAG, "Register user called!!!!!!!!!!!!!!!!!");
-        RegisterUserResult registerUserResultCallback = new RegisterUserResult() {
-            @Override
-            public void notifySuccess(JSONObject response) {
-                //TODO: Change to log.i and call exitSuccess() instead of just logging
-                Log.e(TAG, "Success registering user");
-                Log.e(TAG, response.toString());
-                exitSuccess(email, passwordText);
-            }
-
-            @Override
-            public void notifyError(VolleyError error) {
-                //TODO: Change to log.i and alert user of erro instead of just logging
-                Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
-            }
+        Response.Listener<JSONObject> responseListener = response -> {
+            Log.i(TAG, "Success registering user");
+            Log.i(TAG, response.toString());
+            exitSuccess(email, passwordText);
         };
-        UserAPI.registerUser(email, registerUserResultCallback, this);
+
+        Response.ErrorListener errorListener = error -> {
+            Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
+            showFatalSignUpErrorDialog();
+        };
+
+        UserAPI.registerUser(email, this, responseListener, errorListener);
+    }
+
+    private void showFatalSignUpErrorDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Sign up error");
+        alertDialog.setMessage("There was a fatal error signing you up. Please try again with a different email.");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
     }
 
 
@@ -112,8 +120,8 @@ public class SignUpActivity extends AppCompatActivity {
         switch(requestCode) {
             case CONFIRM_USER_REQUEST:
                 if(resultCode == RESULT_OK) {
-                    Log.i(TAG, "Success confirming user. Going back to sign up to log them in.");
-                    exitSuccess(emailText, passwordText);
+                    Log.i(TAG, "Success confirming user.");
+                    registerUser(emailText);
                 }
                 else {
                     Log.e(TAG, "The result of confirming the user was not ok. We can't automatically sign them in.");
@@ -124,6 +132,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void exitSuccess(String email, String password) {
+        Log.d(TAG, "Exiting with success");
         Intent intent = new Intent();
         intent.putExtra("email", email);
         intent.putExtra("password", password);
@@ -132,6 +141,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void exitError() {
+        Log.d(TAG, "Exiting with error");
         Intent intent = new Intent();
         setResult(RESULT_CANCELED, intent);
         finish();

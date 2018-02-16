@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.android.volley.VolleyError;
-import com.banter.banter.api.RegisterUserResult;
 import com.banter.banter.api.UserAPI;
 
 import org.json.JSONObject;
@@ -52,8 +51,8 @@ public class SignUpConfirmActivity extends AppCompatActivity {
     GenericHandler confHandler = new GenericHandler() {
         @Override
         public void onSuccess() {
-            Log.i(TAG, "Succes confirming user sign up");
-            registerUser(email);
+            Log.i(TAG, "Success confirming user sign up");
+            exitSuccess();
         }
 
         @Override
@@ -62,28 +61,6 @@ public class SignUpConfirmActivity extends AppCompatActivity {
             confCode.setError("Error. Please try again.");
         }
     };
-
-    private void registerUser(String email) {
-        Log.e(TAG, "Register user called!!!!!!!!!!!!!!!!!");
-        RegisterUserResult registerUserResultCallback = new RegisterUserResult() {
-            @Override
-            public void notifySuccess(JSONObject response) {
-                //TODO: Change to log.i and call exitSuccess() instead of just logging
-                Log.e(TAG, "Success registering user");
-                Log.e(TAG, response.toString());
-                exitSuccess();
-            }
-
-            @Override
-            public void notifyError(VolleyError error) {
-                //TODO: Change to log.i and alert user of erro instead of just logging
-                Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
-                //TODO: we need way better handling here. This is a terrible state for the app to be in
-            }
-        };
-        UserAPI.registerUser(email, registerUserResultCallback, this);
-
-    }
 
     private void exitSuccess() {
         Intent intent = new Intent();
