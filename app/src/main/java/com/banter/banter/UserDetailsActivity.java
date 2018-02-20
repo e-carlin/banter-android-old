@@ -16,6 +16,9 @@ import com.amazonaws.mobileconnectors.cognitoidentityprovider.CognitoUserSession
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GenericHandler;
 import com.amazonaws.mobileconnectors.cognitoidentityprovider.handlers.GetDetailsHandler;
 
+import java.util.Arrays;
+import java.util.Map;
+
 import static java.lang.System.exit;
 
 public class UserDetailsActivity extends AppCompatActivity {
@@ -37,12 +40,6 @@ public class UserDetailsActivity extends AppCompatActivity {
         init();
     }
 
-    //TODO: Delete
-    private void getInfo() {
-        CognitoUserSession s = AWSCognitoHelper.getCurrSession();
-        Log.e(TAG, "Accesss token: "+s.getAccessToken());
-    }
-
     private void init() {
 
         //TODO: Delete
@@ -50,7 +47,26 @@ public class UserDetailsActivity extends AppCompatActivity {
         this.doSomething.setText("DO SOMETHING");
         this.doSomething.setOnClickListener((View v) -> {
             Log.e(TAG, "DO SOMETHING button pressed");
-            getInfo();
+            CognitoUserSession s = AWSCognitoHelper.getCurrSession();
+            String u = AWSCognitoHelper.getCognitoUserPool().getCurrentUser().getUserId();
+            Log.e(TAG, "USERID is: "+u);
+            AWSCognitoHelper.getCognitoUserPool().getCurrentUser().getDetailsInBackground(
+                    new GetDetailsHandler(
+
+                    ) {
+                        @Override
+                        public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+                            Log.e(TAG, "Success");
+                            Log.e(TAG,   "Details: "+Arrays.toString(cognitoUserDetails.getAttributes().getAttributes().entrySet().toArray()));
+                        }
+
+                        @Override
+                        public void onFailure(Exception exception) {
+                            Log.e(TAG, "FAILURE: "+exception);
+
+                        }
+                    }
+            );
         });
 
         this.user = AWSCognitoHelper.getCognitoUserPool().getCurrentUser();

@@ -72,7 +72,7 @@ public class SignInActivity extends AppCompatActivity {
         signUpButton.setText(R.string.button_sign_up);
         signUpButton.setOnClickListener((V) -> {
             Log.i(TAG, "Sign up button pressed");
-            Intent intent = new Intent(this, SignUpActivity.class);
+            Intent intent = new Intent(V.getContext(), SignUpActivity.class);
             startActivityForResult(intent, SIGN_UP_USER_REQUEST);
         });
     }

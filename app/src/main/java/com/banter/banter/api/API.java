@@ -31,6 +31,7 @@ public class API {
     private static final String EXCHANGE_PUBLIC_TOKEN_ENDPOINT = "/exchange_plaid_public_token";
     private static final String REGISTER_USER_ENDPOINT = "/user/register";
 
+    /*
     public static void sendPlaidPublicToken(Context ctx, JSONObject data) {
         String url = API_BASE_URL+EXCHANGE_PUBLIC_TOKEN_ENDPOINT;
         Log.e(TAG, "URL: "+url);
@@ -86,5 +87,6 @@ public class API {
                 });
         alertDialog.show();
     }
+    */
 
 }

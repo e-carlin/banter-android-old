@@ -1,15 +1,23 @@
 package com.banter.banter;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.android.volley.Response;
 import com.banter.banter.api.API;
+import com.banter.banter.api.AccountAPI;
+
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 //TODO: Lots of work to be done in here cleaning things up and doing proper error handling
@@ -17,7 +25,6 @@ import java.util.HashMap;
 public class PlaidAddAccountActivity extends AppCompatActivity {
     private final static String TAG= "PlaidAddAccountActivity";
 
-    private final String PLAID_PUBLIC_KEY = "fb846942c3ce8e2945b4b1fd408333";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +58,8 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                     if (action.equals("connected")) {
                         //Success! We got the account details from Plaid
                         // Now send the account details to our API
-                        API.sendPlaidPublicToken(PlaidAddAccountActivity.this, new JSONObject(linkData));
+
+                        AccountAPI.addAccount(new JSONObject(linkData), PlaidAddAccountActivity.this, getResponseListener(), getResponseErrorListener());
                     } else if (action.equals("exit")) {
                         // User exited
                         Log.w(TAG, "User exited the Plaid link workflow");
@@ -76,6 +84,52 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
         });
     }
 
+    private Response.ErrorListener getResponseErrorListener() {
+        return error -> {
+            Log.e(TAG, "Error sending plaid public token to our api: "+error);
+            try {
+                if(error.networkResponse != null && error.networkResponse.data != null) {
+                    Log.e(TAG, "Error message: " + new String(error.networkResponse.data, "UTF-8"));
+                }
+            }
+            catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            finally {
+                showSendPublicTokenErrorAlerDialog();
+            }
+        };
+    }
+
+    private void showSendPublicTokenErrorAlerDialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle("Error saving your account");
+        alertDialog.setMessage("Sorry, our system encountered an error and was unable to save your account. Please try again.");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Retry",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        startActivity(new Intent(PlaidAddAccountActivity.this, PlaidAddAccountActivity.class));
+                    }
+                });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        dialog.dismiss();
+                        startActivity(new Intent(PlaidAddAccountActivity.this, UserDetailsActivity.class));
+                    }
+                });
+        alertDialog.show();
+    }
+
+    private Response.Listener<JSONObject> getResponseListener() {
+        return response -> {
+            Log.i(TAG, "Response from adding account is: "+response.toString());
+            this.startActivity(new Intent(this, UserDetailsActivity.class));
+        };
+    }
+
     private WebView getConfiguredPlaidLinkWebView() {
         // Modify WebView settings
         // TODO: Determine which of these settings I need or not
@@ -89,9 +143,10 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
         return plaidLinkWebView;
     }
 
+    //TODO: These values should all be moved into a config file
     private HashMap<String, String> getLinkInitializationOptions() {
         HashMap<String, String> linkInitializeOptions = new HashMap<>();
-        linkInitializeOptions.put("key", PLAID_PUBLIC_KEY);
+        linkInitializeOptions.put("key", BuildConfig.PLAID_PUBLIC_KEY);
         linkInitializeOptions.put("product", "auth");
         linkInitializeOptions.put("apiVersion", "v2"); // set this to "v1" if using the legacy Plaid API
         linkInitializeOptions.put("env", "sandbox");

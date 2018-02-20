@@ -71,8 +71,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
             else {
                 Log.d(TAG, "User does not need to be confirmed");
-
-
                 registerUser(emailText);
                 exitSuccess(emailText, passwordText);
             }
@@ -101,6 +99,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void notifyError(VolleyError error) {
                 //TODO: Change to log.i and alert user of erro instead of just logging
                 Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
+                exitError();
             }
         };
         UserAPI.registerUser(email, registerUserResultCallback, this);
