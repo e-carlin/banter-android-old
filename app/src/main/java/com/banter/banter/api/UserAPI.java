@@ -15,32 +15,24 @@ import com.banter.banter.BuildConfig;
 public class UserAPI {
     private static final String TAG = "UserAPI";
 
+    private UserAPI() {
+        throw new UnsupportedOperationException();
+    }
 
-    public static void registerUser(String email, RegisterUserResult resultCallback, Context ctx) {
-//        try {
-//        RequestQueueSingleton requestQueue = RequestQueueSingleton.getInstance(ctx);
-//
-//        JSONObject sendObj = new JSONObject();
-//        sendObj.put("email", email);
-//
-//        JsonObjectRequest jsonObject = new JsonObjectRequest(BuildConfig.BANTER_BASE_URL+ Constants.REGISTER_USER_ENDPOINT, sendObj,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        resultCallback.notifySuccess(response);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                resultCallback.notifyError(error);
-//            }
-//        });
-//        requestQueue.add(jsonObject);
-//    }
-//        catch(Exception e) {
-//        Log.e(TAG, "Exception when trying to register user: "+e);
-//        Log.e(TAG, Log.getStackTraceString(e));
-//    }
-}
+    public static void registerUser(String email, Context ctx, Response.Listener<JSONObject> responseListener, Response.ErrorListener errorListener) {
+        try {
+            RequestQueueSingleton requestQueue = RequestQueueSingleton.getInstance(ctx);
 
+            JSONObject sendObj = new JSONObject();
+            sendObj.put("email", email);
+
+            JsonObjectRequest jsonObject = new JsonObjectRequest(BuildConfig.BANTER_BASE_URL+ Constants.REGISTER_USER_ENDPOINT,
+                    sendObj,responseListener,errorListener);
+            requestQueue.add(jsonObject);
+        }
+        catch(Exception e) {
+            Log.e(TAG, "Exception when trying to call api to register user: "+e);
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+    }
 }
