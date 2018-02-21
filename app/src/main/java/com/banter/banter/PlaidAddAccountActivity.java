@@ -59,7 +59,12 @@ public class PlaidAddAccountActivity extends AppCompatActivity {
                         //Success! We got the account details from Plaid
                         // Now send the account details to our API
 
-                        AccountAPI.addAccount(new JSONObject(linkData), PlaidAddAccountActivity.this, getResponseListener(), getResponseErrorListener());
+                        AccountAPI.addAccount(new JSONObject(linkData),
+                                PlaidAddAccountActivity.this,
+                                getResponseListener(),
+                                getResponseErrorListener()
+                        );
+
                     } else if (action.equals("exit")) {
                         // User exited
                         Log.w(TAG, "User exited the Plaid link workflow");

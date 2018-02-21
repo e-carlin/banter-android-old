@@ -49,24 +49,25 @@ public class UserDetailsActivity extends AppCompatActivity {
             Log.e(TAG, "DO SOMETHING button pressed");
             CognitoUserSession s = AWSCognitoHelper.getCurrSession();
             String u = AWSCognitoHelper.getCognitoUserPool().getCurrentUser().getUserId();
-            Log.e(TAG, "USERID is: "+u);
-            AWSCognitoHelper.getCognitoUserPool().getCurrentUser().getDetailsInBackground(
-                    new GetDetailsHandler(
-
-                    ) {
-                        @Override
-                        public void onSuccess(CognitoUserDetails cognitoUserDetails) {
-                            Log.e(TAG, "Success");
-                            Log.e(TAG,   "Details: "+Arrays.toString(cognitoUserDetails.getAttributes().getAttributes().entrySet().toArray()));
-                        }
-
-                        @Override
-                        public void onFailure(Exception exception) {
-                            Log.e(TAG, "FAILURE: "+exception);
-
-                        }
-                    }
-            );
+             Log.e(TAG, "TOKEN: er"+s.getAccessToken().getJWTToken());
+//            Log.e(TAG, "USERID is: "+u);
+//            AWSCognitoHelper.getCognitoUserPool().getCurrentUser().getDetailsInBackground(
+//                    new GetDetailsHandler(
+//
+//                    ) {
+//                        @Override
+//                        public void onSuccess(CognitoUserDetails cognitoUserDetails) {
+//                            Log.e(TAG, "Success");
+//                            Log.e(TAG,   "Details: "+Arrays.toString(cognitoUserDetails.getAttributes().getAttributes().entrySet().toArray()));
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Exception exception) {
+//                            Log.e(TAG, "FAILURE: "+exception);
+//
+//                        }
+//                    }
+//            );
         });
 
         this.user = AWSCognitoHelper.getCognitoUserPool().getCurrentUser();

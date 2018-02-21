@@ -39,4 +39,8 @@ public class AWSCognitoHelper {
         return currSession;
     }
 
+    public static String getCurrentSessionJWTAccessToken() {
+        return AWSCognitoHelper.getCurrSession().getAccessToken().getJWTToken();
+    }
+
 }
