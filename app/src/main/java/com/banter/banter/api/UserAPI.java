@@ -26,7 +26,7 @@ public class UserAPI {
             JSONObject sendObj = new JSONObject();
             sendObj.put("email", email);
 
-            JsonObjectRequest jsonObject = new JsonObjectRequest(BuildConfig.BANTER_BASE_URL+ Constants.REGISTER_USER_ENDPOINT,
+            JsonObjectRequest jsonObject = new JsonObjectRequest(Constants.REGISTER_USER_ENDPOINT,
                     sendObj,responseListener,errorListener);
             requestQueue.add(jsonObject);
         }
