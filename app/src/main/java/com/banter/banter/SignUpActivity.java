@@ -82,6 +82,7 @@ public class SignUpActivity extends AppCompatActivity {
         public void onFailure(Exception exception) {
             // Sign-up failed, check exception for the cause
             Log.e(TAG, "User sign up failed: "+exception);
+            //TODO: Go somewhere else or alert them
         }
     };
 
@@ -95,10 +96,12 @@ public class SignUpActivity extends AppCompatActivity {
 
         Response.ErrorListener errorListener = error -> {
             Log.e(TAG, "Fatal error registering user. We should never get here... "+error.toString());
+            Log.e(TAG,Log.getStackTraceString(error));
+//            Log.e(TAG, error.getMessage());
             showFatalSignUpErrorDialog();
         };
 
-        UserAPI.registerUser(email, this, responseListener, errorListener);
+//        UserAPI.registerUser(email, this, responseListener, errorListener);
     }
 
     private void showFatalSignUpErrorDialog() {

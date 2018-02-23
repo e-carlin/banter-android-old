@@ -58,6 +58,7 @@ public class SignUpConfirmActivity extends AppCompatActivity {
         @Override
         public void onFailure(Exception exception) {
             Log.e(TAG, "Error confirming user sign up: "+exception);
+            Log.e(TAG, Log.getStackTraceString(exception));
             confCode.setError("Error. Please try again.");
         }
     };
